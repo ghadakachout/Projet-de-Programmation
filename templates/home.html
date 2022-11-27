@@ -1,0 +1,153 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %} 
+
+
+     <nav class="navbar navbar-light bg-light">
+         <form class="form-inline my-2 my-lg-0" method="POST" action="/search">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ form.gare.label(class="form-control-label") }}
+
+                    {% if form.gare.errors %}
+                        {{ form.gare(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.gare.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.gare(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+
+                {{ form.submit(class="btn btn-primary custom-btn") }}
+            </div>
+        </form>
+
+         <a class="navbar-brand" href="#"></a>
+        <form class="form-inline my-2 my-lg-0" method="POST" action="/sort">
+            {{ iform.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ iform.myField.label(class="form-control-label") }}
+
+                    {% if iform.myField.errors %}
+                        {{ iform.myField(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in iform.myField.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ iform.myField(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+              <div class="form-group">
+                    </div>
+            </fieldset>
+            <div class="form-group">
+                {{ iform.submit(class="btn btn-primary custom-btn") }}
+            </div>
+        </form>
+        </nav>
+
+
+
+    {% for garment in garments %}
+        <div class="card-body">
+
+            <nav class="navbar navbar-light bg-light">
+
+
+                <form action="{{ url_for('message', garment_id=garment.id) }}" method="POST">
+                    <a class="btn btn-primary custom-btn" href="{{ url_for('message', garment_id=garment.id) }}">Interested</a>
+                </form>
+
+            </nav>
+
+            <div class="card mb-3" >
+              <div class="row no-gutters">
+                <div class="col-md-4">
+           <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+              <div class="carousel-inner">
+                  <div class="carousel-item active">
+                  <img src="data:image/png;base64, {{ garment.pic }}" class="d-block w-100" alt="..." style="max-height: 200px">
+                  </div>
+
+
+              </div>
+              <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+
+
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+
+
+                        <h6 class="text-truncate mb-3"><b>{{ garment.title }}</b></h6>
+                        <div class="d-flex justify-content">
+                            <h6>{{ garment.price }}dt</h6>
+                        </div>
+                   
+                    <p class="card-text">
+
+                      
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                        <a href="/garmentDetails/{{garment.id}}"  class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <a href="/addToCart/{{garment.id}}/{{current_user.id}}" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                    
+                    </div>
+                    
+                    </div>
+                  </div>
+                </div>
+
+
+            </div>
+
+
+
+          </div>
+
+    {% endfor %}
+    {% endif %}
+{% endblock content %}
+{% block content1 %}
+
+       <div class="col-md-4">
+
+                <div class="content-section">
+                    <h3>Messages</h3>
+                    <p class='text-muted'>
+                    <ul class="list-group">
+                    {% for message in messages %}
+                    {% if message.sender == current_user %}
+
+                    <li class="list-group-item list-group-item-light" >
+                        Someone is interested in your {{message.gar_name}}
+                    <br>
+                       Message body: {{message.msg}}
+                    </li>
+                          {% endif %}
+                      {% endfor %}
+                </ul>
+                    </p>
+                </div>
+        </div>
+
+{% endblock content1 %}
